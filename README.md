@@ -1,2 +1,3 @@
 # LD37
-Repo for the 37th Ludum Dare project of mine.
+
+Botond János Kovács, 2016, All rights reserved
