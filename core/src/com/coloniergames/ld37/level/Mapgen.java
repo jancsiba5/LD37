@@ -40,18 +40,53 @@ public class Mapgen {
         else {
             genCorridors(node.getLeftchild());
             genCorridors(node.getRightchild());
+            //Check all
             if (node.getLeftchild().isIsleaf() && node.getRightchild().isIsleaf()) {
-                if (node.getRightchild().getY() == node.getLeftchild().getY()) {
-                    int from1 = node.getLeftchild().getY() + node.getLeftchild().getRecty();
-                    int to1 = node.getLeftchild().getY() + node.getLeftchild().getRecty() + node.getLeftchild().getRectheight();
-                    int from2 = node.getRightchild().getY () + node.getRightchild().getRecty();
-                    int to2 = node.getRightchild().getY() + node.getRightchild().getRecty() + node.getRightchild().getRectheight();
+                if (node.getRightchild().getX() == node.getLeftchild().getX()) {
+                    int from1 = node.getLeftchild().getX() + node.getLeftchild().getRectx();
+                    int to1 = node.getLeftchild().getX() + node.getLeftchild().getRectx() + node.getLeftchild().getRectwidth();
+                    int from2 = node.getRightchild().getX () + node.getRightchild().getRectx();
+                    int to2 = node.getRightchild().getX() + node.getRightchild().getRectx() + node.getRightchild().getRectwidth();
+                    if (!(to1  < from2) || to2 < from1) {
+                        int randx = (from1 > from2 ? from1 : from2) + rnd.nextInt (Math.abs(to2 - to1));
+                        int distance = (node.getRightchild().getY() + node.getRightchild().getRecty()) - (node.getLeftchild().getY() + node.getLeftchild().getRecty() + node.getLeftchild().getRectheight());
+                        for (int i = 0; i < distance; i++) {
+                            mapids[i + node.getLeftchild().getY() + node.getLeftchild().getRecty() + node.getLeftchild().getRectheight()][randx] = 1;
+                        }
+                    }
+                    else {
+                         int randX1 = rnd.nextInt (to1 - from1) + from1;
+                         int randX2 = rnd.nextInt (to2 - from2) + from2;
+                         int distance1 = node.getRightchild().getY() - node.getLeftchild().getY() + node.getLeftchild().getRecty() + node.getLeftchild().getRectheight();
+                         int distance2 = node.getRightchild().getY() + node.getRightchild().getRecty() - node.getRightchild().getY();
+                         for (int i = 0; i < distance1; i++) {mapids[i + node.getLeftchild().getY() + node.getLeftchild().getRecty() + node.getLeftchild().getRectheight()][randX1] = 1;}
+                         for (int i = 0; i < distance2; i++) mapids[node.getRightchild().getY() + node.getRightchild().getRecty() - i][randX2] = 1;
+                         for (int i = 0; i < Math.abs(randX2 - randX1); i++) { mapids[node.getRightchild().getY()][i + (randX1 < randX2 ? randX1 : randX2)] = 1;}
+                    }
                 }
                 else if (node.getRightchild().getY() == node.getLeftchild().getY()) {
-                    
+                    int from1 = node.getLeftchild().getX() + node.getLeftchild().getRectx();
+                    int to1 = node.getLeftchild().getX() + node.getLeftchild().getRectx() + node.getLeftchild().getRectwidth();
+                    int from2 = node.getRightchild().getX () + node.getRightchild().getRectx();
+                    int to2 = node.getRightchild().getX() + node.getRightchild().getRectx() + node.getRightchild().getRectwidth();
+                    if (to1 > from2 && from1 < from2) {
+                        int randx = (from1 > from2 ? from1 : from2) + rnd.nextInt (Math.abs(to2 - to1));
+                        int distance = (node.getRightchild().getY() + node.getRightchild().getRecty()) - (node.getLeftchild().getY() + node.getLeftchild().getRecty() + node.getLeftchild().getRectheight());
+                        for (int i = 0; i < distance; i++) {
+                            mapids[i + node.getLeftchild().getY() + node.getLeftchild().getRecty() + node.getLeftchild().getRectheight()][randx] = 1;
+                        }
+                    }
+                    else {
+                         int randX1 = rnd.nextInt (to1 - from1) + from1;
+                         int randX2 = rnd.nextInt (to2 - from2) + from2;
+                         int distance1 = node.getRightchild().getY() - node.getLeftchild().getY() + node.getLeftchild().getRecty() + node.getLeftchild().getRectheight();
+                         int distance2 = node.getRightchild().getY() + node.getRightchild().getRecty() - node.getRightchild().getY();
+                         for (int i = 0; i < distance1; i++) {mapids[i + node.getLeftchild().getY() + node.getLeftchild().getRecty() + node.getLeftchild().getRectheight()][randX1] = 1;}
+                         for (int i = 0; i < distance2; i++) mapids[node.getRightchild().getY() + node.getRightchild().getRecty() - i][randX2] = 1;
+                         for (int i = 0; i < Math.abs(randX2 - randX1); i++) { mapids[node.getRightchild().getY()][i + (randX1 < randX2 ? randX1 : randX2)] = 1;}
+                    }
                 }
             }
-            
         }
     }
     
