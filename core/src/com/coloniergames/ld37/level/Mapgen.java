@@ -32,6 +32,29 @@ public class Mapgen {
         }
 
     }
+    
+    private void genCorridors(Bnt node) {
+        if (!(node.getRightchild() != null && node.getLeftchild() != null)) {
+            return;
+        }
+        else {
+            genCorridors(node.getLeftchild());
+            genCorridors(node.getRightchild());
+            if (node.getLeftchild().isIsleaf() && node.getRightchild().isIsleaf()) {
+                if (node.getRightchild().getY() == node.getLeftchild().getY()) {
+                    int from1 = node.getLeftchild().getY() + node.getLeftchild().getRecty();
+                    int to1 = node.getLeftchild().getY() + node.getLeftchild().getRecty() + node.getLeftchild().getRectheight();
+                    int from2 = node.getRightchild().getY () + node.getRightchild().getRecty();
+                    int to2 = node.getRightchild().getY() + node.getRightchild().getRecty() + node.getRightchild().getRectheight();
+                }
+                else if (node.getRightchild().getY() == node.getLeftchild().getY()) {
+                    
+                }
+            }
+            
+        }
+    }
+    
 
     private void gen(Bnt node, int minsize, int level, int maxlevel) {
         if (!cansplit(node, minsize) || level >= maxlevel) {
@@ -52,6 +75,11 @@ public class Mapgen {
             if (node.getHeight() - rectheight > 0) {
                 recty += rnd.nextInt(node.getHeight() - rectheight);
             }
+            node.setRectx(rectx);
+            node.setRecty(recty);
+            node.setRectheight(rectheight);
+            node.setRectwidth(rectwidth);
+            node.setIsleaf(true);
             System.out.println(rectwidth + "  " + rectheight + " " + rectx + " " + recty);
             for (int i = rectx + node.getX(); i < node.getX() + rectx + rectwidth; i++) {
                 for (int j = recty + node.getY() ; j < node.getY() + recty + rectheight; j++) {
