@@ -7,6 +7,7 @@ package com.coloniergames.ld37.level;
  */
 public class Bnt {
     
+    // valtoztattatm
     private Bnt leftchild;
     private Bnt rightchild;
     private int width;
