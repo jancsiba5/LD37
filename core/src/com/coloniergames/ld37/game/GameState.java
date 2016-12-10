@@ -1,7 +1,10 @@
 package com.coloniergames.ld37.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -9,6 +12,12 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class GameState implements Screen, InputProcessor {
 
+    public GameState () {
+        commonInit ();
+        
+        init ();
+    }
+    
     /** Main SpriteBatch for drawing */
     protected SpriteBatch spriteBatch;
     
@@ -18,14 +27,34 @@ public abstract class GameState implements Screen, InputProcessor {
     /** FrameBuffer to draw to, used in post processing */
     protected FrameBuffer screenBuffer;
     
+    /** FrameBuffer to draw GUI to */
+    protected FrameBuffer guiBuffer;
+    
+    /** Camera for the transformation of in-game elements */
+    protected OrthographicCamera gameCamera;
+    
+    /** Camera for the transformation of GUI elements (text, dialogs, etc.) */
+    protected OrthographicCamera guiCamera;
+    
+    /** Screen dimensions represented in different forms */
     protected int W;
     protected int H;
     protected float w;
     protected float h;
     protected Vector2 dims;
     
+    /** The state the game changes into when evalShouldChange () returns true */
+    public GameState nextState;
+    
     /** Initialize common variables of the GameState (SpriteBatch, FrameBuffer, etc. */
     public void commonInit () {
+        
+        this.dims = new Vector2 ();
+        
+        resize (Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        
+        spriteBatch = new SpriteBatch ();
+        shapeRenderer = new ShapeRenderer ();
         
     }
     
@@ -37,6 +66,8 @@ public abstract class GameState implements Screen, InputProcessor {
     public abstract void draw (float delta);
     /** Post-process drawn frame */
     public abstract void postProcess (float delta);
+    /** Called from dispose () */
+    public abstract void uninit ();
     
     public abstract boolean keyDown(int keycode);
     public abstract boolean keyUp(int keycode);
@@ -46,10 +77,13 @@ public abstract class GameState implements Screen, InputProcessor {
     public abstract boolean mouseMoved(int screenX, int screenY);
     public abstract boolean scrolled(int amount);
     
+    public abstract boolean evalShouldChange ();
+    
+    public abstract void pause();
+    public abstract void resume();
+    
     public void show() {
-        commonInit ();
-        
-        init ();
+        resume ();
     }
 
     public void render(float delta) {
@@ -72,23 +106,31 @@ public abstract class GameState implements Screen, InputProcessor {
         this.h = (float) H;
         this.dims.x = this.w;
         this.dims.y = this.h;
-    }
-
-    public void pause() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void resume() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        gameCamera = new OrthographicCamera (w, h);
+        
+        guiCamera = new OrthographicCamera (w, h);
+        guiCamera.position.set(-w / 2.0f, -h / 2.0f, 0.0f);
+        guiCamera.update();
+        
+        if (guiBuffer != null) {
+            guiBuffer.dispose();
+        }
+        guiBuffer = new FrameBuffer (Format.RGB888, W, H, false);
+        
+        if (screenBuffer != null) {
+            screenBuffer.dispose();
+        }
+        screenBuffer = new FrameBuffer (Format.RGB888, W, H, false);
+        
     }
 
     public void hide() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        pause ();
     }
 
-    public void dispose() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    // never dispose
+    public void dispose() {}
 
 
 

@@ -78,3 +78,6 @@ settings.gradle
 gradle/wrapper/*
 
 ./.nb-gradle/private/cache/*
+/.nb-gradle-properties
+/corridor_alg.txt
+/Untitled.png
