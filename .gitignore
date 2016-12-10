@@ -76,3 +76,5 @@ gradle.properties
 gradlew.bat
 settings.gradle
 gradle/wrapper/*
+
+.nb-gradle/private/cache/*
