@@ -7,12 +7,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class LudumMain extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
 	
 	@Override
 	public void create () {
-            System.out.println ("Hello, Gabi!");
+            
 	}
 
 	@Override
