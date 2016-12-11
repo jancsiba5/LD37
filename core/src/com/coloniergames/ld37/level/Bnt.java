@@ -87,4 +87,9 @@ public class Bnt {
     public int getY() {
         return y;
     }
+    
+    public void addRoom (Room r) {
+        if (parent != null) parent.addRoom (r);
+        roomlist.add (r);
+    }
 }
