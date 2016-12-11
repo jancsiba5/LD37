@@ -8,6 +8,8 @@ import java.util.Random;
  * @author Bözse
  */
 public class Mapgen {
+    
+    //
 
     private static Random rnd;
     public int[][] mapids;
@@ -30,7 +32,18 @@ public class Mapgen {
             }
             System.out.println("");
         }
-
+    }
+    
+    private void buildCorr(Bnt left, Bnt right) {
+        if (left.getX() == right.getX()) {
+            
+        }        
+        else if (left.getY() == right.getY()) {
+            
+        }
+        else {
+            
+        }
     }
     
     private void genCorridors(Bnt node) {
@@ -40,10 +53,11 @@ public class Mapgen {
         else {
             genCorridors(node.getLeftchild());
             genCorridors(node.getRightchild());
-            //Check all
-            if (node.getLeftchild().isIsleaf() && node.getRightchild().isIsleaf()) {
-                if (node.getRightchild().getX() == node.getLeftchild().getX()) {
-                    int from1 = node.getLeftchild().getX() + node.getLeftchild().getRectx();
+            //Check all i lost... buildCorr(node.getLeftchild, node.getRightchild)
+            
+            if (node.getRightchild().getX() == node.getLeftchild().getX()) {
+                
+                    /*int from1 = node.getLeftchild().getX() + node.getLeftchild().getRectx();
                     int to1 = node.getLeftchild().getX() + node.getLeftchild().getRectx() + node.getLeftchild().getRectwidth();
                     int from2 = node.getRightchild().getX () + node.getRightchild().getRectx();
                     int to2 = node.getRightchild().getX() + node.getRightchild().getRectx() + node.getRightchild().getRectwidth();
@@ -53,8 +67,8 @@ public class Mapgen {
                         for (int i = 0; i < distance; i++) {
                             mapids[i + node.getLeftchild().getY() + node.getLeftchild().getRecty() + node.getLeftchild().getRectheight()][randx] = 1;
                         }
-                    }
-                    else {
+                    }*/
+                    /*else {
                          int randX1 = rnd.nextInt (to1 - from1) + from1;
                          int randX2 = rnd.nextInt (to2 - from2) + from2;
                          int distance1 = node.getRightchild().getY() - node.getLeftchild().getY() + node.getLeftchild().getRecty() + node.getLeftchild().getRectheight();
@@ -63,9 +77,11 @@ public class Mapgen {
                          for (int i = 0; i < distance2; i++) mapids[node.getRightchild().getY() + node.getRightchild().getRecty() - i][randX2] = 1;
                          for (int i = 0; i < Math.abs(randX2 - randX1); i++) { mapids[node.getRightchild().getY()][i + (randX1 < randX2 ? randX1 : randX2)] = 1;}
                     }
+*/
+
                 }
                 else if (node.getRightchild().getY() == node.getLeftchild().getY()) {
-                    int from1 = node.getLeftchild().getX() + node.getLeftchild().getRectx();
+                    /*int from1 = node.getLeftchild().getX() + node.getLeftchild().getRectx();
                     int to1 = node.getLeftchild().getX() + node.getLeftchild().getRectx() + node.getLeftchild().getRectwidth();
                     int from2 = node.getRightchild().getX () + node.getRightchild().getRectx();
                     int to2 = node.getRightchild().getX() + node.getRightchild().getRectx() + node.getRightchild().getRectwidth();
@@ -85,15 +101,14 @@ public class Mapgen {
                          for (int i = 0; i < distance2; i++) mapids[node.getRightchild().getY() + node.getRightchild().getRecty() - i][randX2] = 1;
                          for (int i = 0; i < Math.abs(randX2 - randX1); i++) { mapids[node.getRightchild().getY()][i + (randX1 < randX2 ? randX1 : randX2)] = 1;}
                     }
+                    */
                 }
             }
+
         }
-    }
     
-
     private void gen(Bnt node, int minsize, int level, int maxlevel) {
-        if (!cansplit(node, minsize) || level >= maxlevel) {
-
+        if (!cansplit(node, minsize) || level >= maxlevel) {           
             int rectwidth = minsize;
             if (node.getWidth() - minsize > 0) {
                 rectwidth += rnd.nextInt(node.getWidth() - minsize);
@@ -110,51 +125,37 @@ public class Mapgen {
             if (node.getHeight() - rectheight > 0) {
                 recty += rnd.nextInt(node.getHeight() - rectheight);
             }
-            node.setRectx(rectx);
-            node.setRecty(recty);
-            node.setRectheight(rectheight);
-            node.setRectwidth(rectwidth);
+            Room room = new Room(rectx, recty, rectwidth, rectheight);
+            node.getRoomlist().add(room);
             node.setIsleaf(true);
-            System.out.println(rectwidth + "  " + rectheight + " " + rectx + " " + recty);
             for (int i = rectx + node.getX(); i < node.getX() + rectx + rectwidth; i++) {
                 for (int j = recty + node.getY() ; j < node.getY() + recty + rectheight; j++) {
-                    System.out.println(i + "  " + j);
                     mapids[j][i] = 1;
                 }
             }
             return;
         }
         boolean vertical = rnd.nextBoolean();
-
         if (vertical) {
-
             int splitx = rnd.nextInt(node.getWidth());
             while (splitx < minsize || node.getWidth()- splitx < minsize) {
                 splitx = rnd.nextInt(node.getWidth());
             }
-            System.out.println(splitx);
             node.setLeftchild(new Bnt(splitx, node.getHeight(), node.getX(), node.getY()));
-            
             gen(node.getLeftchild(), minsize, level + 1, maxlevel);
             node.setRightchild(new Bnt(node.getWidth() - splitx, node.getHeight(), node.getX() + splitx, node.getY()));
-            
-
             gen(node.getRightchild(), minsize, level + 1, maxlevel);
 
-        } else {
+        }
+        else {
             int splity = rnd.nextInt(node.getHeight());
             while (splity < minsize || node.getHeight() - splity < minsize) {
                 splity = rnd.nextInt(node.getHeight());
             }
-            System.out.println(splity);
-            node.setLeftchild(new Bnt(node.getWidth(), splity, node.getX(), node.getY()));
-            
+            node.setLeftchild(new Bnt(node.getWidth(), splity, node.getX(), node.getY()));           
             gen(node.getLeftchild(), minsize, level + 1, maxlevel);
             node.setRightchild(new Bnt(node.getWidth(), node.getHeight() - splity, node.getX(), node.getY() + splity));
-            
-
             gen(node.getRightchild(), minsize, level + 1, maxlevel);
-
         }
     }
 

@@ -1,6 +1,9 @@
 
 package com.coloniergames.ld37.level;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Bözse
@@ -10,46 +13,30 @@ public class Bnt {
     // valtoztattatm
     private Bnt leftchild;
     private Bnt rightchild;
+    private Bnt parent;
     private int width;
     private int height;
     private int x;
     private int y;
-    private int rectx;
-    private int recty;
-    private int rectwidth;
-    private int rectheight;
+    private List<Room> roomlist;
     private boolean isleaf;
 
-    public int getRectx() {
-        return rectx;
+   
+
+    public Bnt getParent() {
+        return parent;
     }
 
-    public void setRectx(int rectx) {
-        this.rectx = rectx;
+    public void setParent(Bnt parent) {
+        this.parent = parent;
     }
 
-    public int getRecty() {
-        return recty;
+    public List<Room> getRoomlist() {
+        return roomlist;
     }
 
-    public void setRecty(int recty) {
-        this.recty = recty;
-    }
-
-    public int getRectwidth() {
-        return rectwidth;
-    }
-
-    public void setRectwidth(int rectwidth) {
-        this.rectwidth = rectwidth;
-    }
-
-    public int getRectheight() {
-        return rectheight;
-    }
-
-    public void setRectheight(int rectheight) {
-        this.rectheight = rectheight;
+    public void setRoomlist(List<Room> roomlist) {
+        this.roomlist = roomlist;
     }
 
     public Bnt(int width, int height, int x, int y) {
@@ -58,6 +45,7 @@ public class Bnt {
         this.x = x;
         this.y = y;
         isleaf = false;
+        roomlist = new ArrayList();
     }
 
     public boolean isIsleaf() {
@@ -99,7 +87,4 @@ public class Bnt {
     public int getY() {
         return y;
     }
-    
-    
-
 }
