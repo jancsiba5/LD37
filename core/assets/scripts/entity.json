@@ -1,0 +1,18 @@
+{
+	"enemy_types": [
+		{
+			"name": "shooting_commando",
+			"image": "shooting_commando.png",
+			"type": "armed",
+			"weapon_type": "rifle",
+			"weapon_bind_point": { "x": 43, "y": 26 }
+		},
+		{
+			"name": "shooting_police",
+			"image": "shooting_police.png",
+			"type": "armed",
+			"weapon_type": "rifle",
+			"weapon_bind_point": { "x": 43, "y": 26 }
+		}
+	]
+}
