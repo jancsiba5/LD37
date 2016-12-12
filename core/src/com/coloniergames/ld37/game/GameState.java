@@ -43,11 +43,15 @@ public abstract class GameState implements Screen, InputProcessor {
     protected float h;
     protected Vector2 dims;
     
+    protected float gameTimer;
+    
     /** The state the game changes into when evalShouldChange () returns true */
     public GameState nextState;
     
     /** Initialize common variables of the GameState (SpriteBatch, FrameBuffer, etc. */
-    public void commonInit () {
+    public final void commonInit () {
+        
+        this.gameTimer = 0.0f;
         
         this.dims = new Vector2 ();
         
@@ -88,6 +92,8 @@ public abstract class GameState implements Screen, InputProcessor {
 
     public void render(float delta) {
 
+        gameTimer += delta;
+        
         // TODO: Seperate thread
         tick (delta);
         

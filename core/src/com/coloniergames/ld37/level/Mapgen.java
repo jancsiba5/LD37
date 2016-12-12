@@ -1,5 +1,8 @@
 package com.coloniergames.ld37.level;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -12,19 +15,43 @@ public class Mapgen {
     private static Random rnd;
     public int[][] mapids;
 
+    public List <Bnt> leafNodes;
+    
     static {
         rnd = new Random();
     }
 
-    public Mapgen(int minsize, Bnt root, int maxlevel) {
-        mapids = new int[root.getHeight()][root.getWidth()];
-        for (int i = 0; i < root.getHeight(); i++) {
-            for (int j = 0; j < root.getWidth(); j++) {
+    public Mapgen(int minsize, int maxsize, Bnt root, int maxlevel) {
+        mapids = new int[root.getHeight() + 2][root.getWidth() + 2];
+        for (int i = 0; i < root.getHeight() + 2; i++) {
+            for (int j = 0; j < root.getWidth() + 2; j++) {
                 mapids[i][j] = 0;
             }
         }
-        gen(root, minsize, 0, maxlevel);
+        leafNodes = new ArrayList <Bnt> ();
+        gen(root, minsize, maxsize, 0, maxlevel);
         genCorridors(root);
+        System.out.println ("NUM LEAFS: " + leafNodes.size());
+        
+        // Körbe kell venni 0-kal, hogy ne legyen probléma a falak berakásánál
+        int [][] unmarginned = new int [root.getHeight ()] [root.getWidth()];
+        for (int i = 0; i < root.getHeight(); i++) {
+            for (int j = 0; j < root.getWidth (); j++) {
+                unmarginned [i] [j] = mapids [i] [j];
+            }
+        }
+        
+        for (int i = 0; i < root.getHeight() + 2; i++) {
+            for (int j = 0; j < root.getWidth() + 2; j++) {
+                mapids[i][j] = 0;
+            }
+        }
+        
+        for (int i = 1; i < root.getHeight () + 1; i++) {
+            for (int j = 1; j < root.getWidth () + 1; j++) {
+                mapids [i][j] = unmarginned [i - 1] [j - 1];
+            }
+        }
     }
 
     boolean intervalIntersects (int int1From, int int1To, int int2From, int int2To) {
@@ -120,7 +147,7 @@ public class Mapgen {
 
     }
 
-    private void gen(Bnt node, int minsize, int level, int maxlevel) {
+    private void gen(Bnt node, int minsize, int maxsize, int level, int maxlevel) {
         for (int i = 0; i < level; i++) System.out.print ("  ");
         System.out.println (level + " / " + maxlevel);
         if (!cansplit(node, minsize) || level >= maxlevel) {
@@ -145,6 +172,7 @@ public class Mapgen {
             // node.getRoomlist().add(room);
             node.addRoom (room);
             node.setIsleaf(true);
+            leafNodes.add (node);
             for (int i = rectx + node.getX(); i < node.getX() + rectx + rectwidth; i++) {
                 for (int j = recty + node.getY(); j < node.getY() + recty + rectheight; j++) {
                     mapids[j][i] += 1;
@@ -156,27 +184,27 @@ public class Mapgen {
         boolean vertical = rnd.nextBoolean();
         if (vertical && node.getWidth() >= minsize * 2 + 1) {
             int splitx = rnd.nextInt(node.getWidth());
-            while (splitx < minsize || node.getWidth() - splitx < minsize) {
+            while (splitx < minsize || splitx > maxsize || node.getWidth() - splitx < minsize) {
                 splitx = rnd.nextInt(node.getWidth());
             }
             node.setLeftchild(new Bnt(splitx, node.getHeight(), node.getX(), node.getY()));
             node.getLeftchild().setParent(node);
-            gen(node.getLeftchild(), minsize, level + 1, maxlevel);
+            gen(node.getLeftchild(), minsize, maxsize, level + 1, maxlevel);
             node.setRightchild(new Bnt(node.getWidth() - splitx, node.getHeight(), node.getX() + splitx, node.getY()));
             node.getRightchild().setParent(node);
-            gen(node.getRightchild(), minsize, level + 1, maxlevel);
+            gen(node.getRightchild(), minsize, maxsize, level + 1, maxlevel);
 
         } else if (node.getHeight () >= minsize * 2 + 1) {
             int splity = rnd.nextInt(node.getHeight());
-            while (splity < minsize || node.getHeight() - splity < minsize) {
+            while (splity < minsize || splity > maxsize || node.getHeight() - splity < minsize) {
                 splity = rnd.nextInt(node.getHeight());
             }
             node.setLeftchild(new Bnt(node.getWidth(), splity, node.getX(), node.getY()));
             node.getLeftchild().setParent(node);
-            gen(node.getLeftchild(), minsize, level + 1, maxlevel);
+            gen(node.getLeftchild(), minsize, maxsize, level + 1, maxlevel);
             node.setRightchild(new Bnt(node.getWidth(), node.getHeight() - splity, node.getX(), node.getY() + splity));
             node.getRightchild().setParent(node);
-            gen(node.getRightchild(), minsize, level + 1, maxlevel);
+            gen(node.getRightchild(), minsize, maxsize, level + 1, maxlevel);
         }
         
         for (int i = 0; i < level; i++) System.out.print ("  ");

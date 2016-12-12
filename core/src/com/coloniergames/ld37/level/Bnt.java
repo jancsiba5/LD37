@@ -21,7 +21,7 @@ public class Bnt {
     private List<Room> roomlist;
     private boolean isleaf;
 
-   
+    public List <Tile> containedTiles;
 
     public Bnt getParent() {
         return parent;

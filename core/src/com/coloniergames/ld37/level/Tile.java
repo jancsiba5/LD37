@@ -45,10 +45,17 @@ public class Tile {
     public static int METAL_WALL_CORNER_BLOCK_BOTTOM_LEFT = 0x1D;
     public static int METAL_WALL_CORNER_BLOCK_BOTTOM_RIGHT = 0x1E;
     
+    public static int FLOOR_TILE = 0x1F;
+    public static int FLOOR_TILE_2 = 0x20;
+    public static int FLOOR_TILE_3 = 0x21;
+    public static int FLOOR_TILE_4 = 0x22;
+    
     public static TextureRegion METAL_WALL [][];
+    public static TextureRegion FLOOR_TILES [][];
     
     public static void initTileRegions () {
-        METAL_WALL = new TextureRegion (new Texture (Gdx.files.internal("metal_wall.png"))).split(16, 16);
+        METAL_WALL = new TextureRegion (new Texture (Gdx.files.internal("textures/tiles/metal_wall.png"))).split(16, 16);
+        FLOOR_TILES = new TextureRegion (new Texture (Gdx.files.internal ("textures/tiles/lab_floor.png"))).split (16, 16);
     }
     
     public static TextureRegion mapIDToRegion (int id) {
@@ -88,14 +95,24 @@ public class Tile {
             return METAL_WALL   [(id - METAL_WALL_CORNER_BLOCK_TOP_LEFT) / 2 + 3]
                                 [(id - METAL_WALL_CORNER_BLOCK_TOP_LEFT) % 2];
             
+        } else if (id >= FLOOR_TILE
+                && id <= FLOOR_TILE_4) {
+            
+            return FLOOR_TILES [(id - FLOOR_TILE) / 2] [(id - FLOOR_TILE) % 2];
+            
         }
         
         return null;
     }
     
-    public HitObject hitObject;
     public int tid;
     public int tx;
     public int ty;
+    
+    public Tile (int x, int y, int tid) {
+        this.tx = x;
+        this.ty = y;
+        this.tid = tid;
+    }
     
 }
